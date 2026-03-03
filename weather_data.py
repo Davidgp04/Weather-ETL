@@ -8,7 +8,11 @@ from airflow.sdk import dag
 from datetime import datetime
 import pandas as pd
 from airflow.providers.standard.operators.python import PythonOperator
+import os
+from dotenv import load_dotenv
 #from airflow.operators.python import PythonOperator # type: ignore
+
+load_dotenv()
 
 def extract_data(file_path):
     data = pd.read_csv(file_path)
@@ -92,15 +96,17 @@ def run_etl_pipeline():
         catchup=False,
 )
 def weather_pipeline():
+    data_path = os.getenv('WEATHER_DATA_PATH', '/data/weather_data.csv')
+    database_path = os.getenv('WEATHER_DATABASE_PATH', '/data/weather_data.db')
     @task
     def extract():
-        return extract_data('/home/ubuntu/weather-etl/data/weather_data.csv')
+        return extract_data(data_path)
     @task
     def transform(data):
         return transform_data(data)
     @task
     def load(data):
-        load_data(data, '/home/ubuntu/weather-etl/weather_data.db')
+        load_data(data, database_path)
     
     data= extract()
     transformed_data = transform(data)
