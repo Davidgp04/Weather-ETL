@@ -2,10 +2,13 @@ import pandas as pd
 import time
 import sqlite3
 from airflow import DAG
-from airflow.decorators import task, dag
+from airflow.sdk import task
+from airflow.sdk import dag
+#from airflow.decorators import task, dag
 from datetime import datetime
 import pandas as pd
-from airflow.operators.python import PythonOperator # type: ignore
+from airflow.providers.standard.operators.python import PythonOperator
+#from airflow.operators.python import PythonOperator # type: ignore
 
 def extract_data(file_path):
     data = pd.read_csv(file_path)
@@ -91,13 +94,13 @@ def run_etl_pipeline():
 def weather_pipeline():
     @task
     def extract():
-        return extract_data('/Users/davidgrisales/Documents/Code/Data Engineering/data/weather_data.csv')
+        return extract_data('/home/ubuntu/weather-etl/data/weather_data.csv')
     @task
     def transform(data):
         return transform_data(data)
     @task
     def load(data):
-        load_data(data, '/Users/davidgrisales/Documents/Code/Data Engineering/weather_data.db')
+        load_data(data, '/home/ubuntu/weather-etl/weather_data.db')
     
     data= extract()
     transformed_data = transform(data)
@@ -107,4 +110,3 @@ def weather_pipeline():
 # run_etl_pipeline()
 dag = weather_pipeline()
 print(f"Execution time: {time.time() - now:0.2f} seconds")
-    
