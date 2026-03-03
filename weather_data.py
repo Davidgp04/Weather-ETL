@@ -1,25 +1,26 @@
 import pandas as pd
 import time
 import sqlite3
+from datetime import datetime
+import pandas as pd
 from airflow import DAG
 from airflow.sdk import task
 from airflow.sdk import dag
-#from airflow.decorators import task, dag
-from datetime import datetime
-import pandas as pd
 from airflow.providers.standard.operators.python import PythonOperator
 import os
 from dotenv import load_dotenv
-#from airflow.operators.python import PythonOperator # type: ignore
+from vine import transform
 
 load_dotenv()
 
 def extract_data(file_path):
     data = pd.read_csv(file_path)
+    # data.to_parquet('data/weather_data.parquet', index=False)
     return data
 
 
 def transform_data(data):
+    # data=pd.read_parquet('data/weather_data.parquet')
     data = data.dropna()
     data=data.drop_duplicates()
     data['Date_Time'] = pd.to_datetime(data['Date_Time'], errors='coerce')
@@ -31,9 +32,11 @@ def transform_data(data):
     data = data[data['Temperature_C'].between(-50, 60)]
     data = data[data['Wind_Speed_kmh'] >= 0]
     data = data[data['Precipitation_mm'] >= 0]
+    # data.to_parquet('data/weather_data_cleaned.parquet', index=False)
     return data
 
-def load_data(df, db_name):
+def load_data(df,db_name):
+    # df=pd.read_parquet('data/weather_data_cleaned.parquet')
     try:
         conn = sqlite3.connect(db_name)
         cursor = conn.cursor()
@@ -41,6 +44,7 @@ def load_data(df, db_name):
         # Create table if it doesn't exist
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS weather_data (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 location TEXT,
                 date_time TEXT,
                 temperature_c REAL,
@@ -83,11 +87,12 @@ def load_data(df, db_name):
 now = time.time()
 
 def run_etl_pipeline():
-    data = extract_data('data/weather_data.csv')
-    data = transform_data(data)
-    load_data(data, 'weather_data.db')
-    # print(len(data))
-    # print(data.head())
+    data_path="data"
+    data=extract_data(f'{data_path}/weather_data.csv')
+    data=transform_data(data)
+    load_data(data,f'{data_path}/weather_data.db')
+    print(len(data))
+    print(data.head())
 
 @dag(
         dag_id='weather_etl_pipeline',
@@ -96,21 +101,29 @@ def run_etl_pipeline():
         catchup=False,
 )
 def weather_pipeline():
-    data_path = os.getenv('WEATHER_DATA_PATH', '/data/weather_data.csv')
-    database_path = os.getenv('WEATHER_DATABASE_PATH', '/data/weather_data.db')
+
+    data_path="data"
     @task
     def extract():
-        return extract_data(data_path)
+        df=extract_data(f'{data_path}/weather_data.csv')
+        raw_path=f'{data_path}/weather_data.parquet'
+        df.to_parquet(raw_path, index=False)
+        return raw_path
+
     @task
-    def transform(data):
-        return transform_data(data)
+    def transform(raw_path:str):
+        df=pd.read_parquet(raw_path)
+        df=transform_data(df)
+        transformed_path=f'{data_path}/weather_data_cleaned.parquet'
+        df.to_parquet(transformed_path, index=False)
+        return transformed_path
     @task
-    def load(data):
-        load_data(data, database_path)
+    def load(transformed_path:str):
+        load_data(pd.read_parquet(transformed_path),f'{data_path}/weather_data.db')
     
-    data= extract()
-    transformed_data = transform(data)
-    load(transformed_data)
+    raw=extract()
+    transformed=transform(raw)
+    load(transformed)
 
 
 # run_etl_pipeline()
