@@ -4,3 +4,6 @@ apache-airflow[postgres,slack,celery]
 dotenv
 python-dotenv
 fastparquet
+psycopg2-binary
+psycopg2
+argparse
