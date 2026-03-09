@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
-      ports:
+    ports:
         - "5434:5432"
 
   weather-db:
@@ -15,9 +15,9 @@ services:
       POSTGRES_USER: weather_user
       POSTGRES_PASSWORD: weather_password
       POSTGRES_DB: weather
-      ports:
+    ports:
         - "5432:5432"
-    volumnes:
+    volumes:
       - weather_db_data:/var/lib/postgresql/data
       # Init folder to create essential tables
       - ./sql/init:/docker-entrypoint-initdb.d
