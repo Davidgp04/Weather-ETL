@@ -41,3 +41,6 @@ def weather_pipeline():
     transformed=transform(raw)
     load(transformed)
 
+
+
+weather_etl_pipeline_dag=weather_pipeline()
