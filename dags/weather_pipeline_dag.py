@@ -35,7 +35,7 @@ def weather_pipeline():
         return transformed_path
     @task
     def load(transformed_path:str):
-        load_data(pd.read_parquet(transformed_path),f'{data_path}/processed/weather_data.db')
+        load_data(pd.read_parquet(transformed_path))
     
     raw=extract()
     transformed=transform(raw)

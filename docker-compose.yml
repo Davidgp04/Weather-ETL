@@ -1,18 +1,26 @@
 services:
 
   airflow-db:
-    image: postgres:15
+    image: postgres:17
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
+      ports:
+        - "5434:5432"
 
   weather-db:
-    image: postgres:15
+    image: postgres:17
     environment:
       POSTGRES_USER: weather_user
       POSTGRES_PASSWORD: weather_password
       POSTGRES_DB: weather
+      ports:
+        - "5432:5432"
+    volumnes:
+      - weather_db_data:/var/lib/postgresql/data
+      # Init folder to create essential tables
+      - ./sql/init:/docker-entrypoint-initdb.d
 
   airflow:
     build: .
@@ -22,12 +30,12 @@ services:
     env_file:
       - .env
     environment:
-      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-      PYTHONPATH: /opt/airflow
+      PYTHONPATH: /opt/airflow # Define the root of the project in PYTHONPATH
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./dags:/opt/airflow/dags # Map the dags folder to Airflow's dags directory
       - ./src:/opt/airflow/src
       - ./sql:/opt/airflow/sql
       - ./data:/opt/airflow/data
