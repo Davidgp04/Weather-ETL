@@ -24,13 +24,13 @@ Intermediate data between pipeline stages is stored using **Parquet files** to i
 
 # 🧰 Technology Stack
 
-- 🐍 **Python** – Core programming language used to implement the pipeline  
-- 🐼 **Pandas** – Data extraction and transformation  
-- 🐘 **PostgreSQL** – Data storage for staging and production tables  
-- 🌬 **Apache Airflow** – Workflow orchestration and scheduling  
-- 📦 **Parquet** – Intermediate storage format for efficient data exchange  
-- 🐳 **Docker** – Containerized runtime environment  
-- 🧩 **Docker Compose** – Multi-container orchestration  
+- **Python** – Core programming language used to implement the pipeline  
+- **Pandas** – Data extraction and transformation  
+- **PostgreSQL** – Data storage for staging and production tables  
+- **Apache Airflow** – Workflow orchestration and scheduling  
+- **Parquet** – Intermediate storage format for efficient data exchange  
+- **Docker** – Containerized runtime environment  
+- **Docker Compose** – Multi-container orchestration  
 
 ---
 
@@ -228,14 +228,14 @@ The staging table acts as a **temporary validation layer before updating the pro
 
 ---
 
-# 🔮 Future Improvements
+# 📈 Future Improvements
 
 Possible enhancements for the pipeline include:
 
-- Implement **incremental ingestion** 📈  
-- Add **unit tests for transformation logic** 🧪  
-- Integrate **data validation frameworks (e.g., Great Expectations)** ✅  
-- Store metadata in a **data catalog** 📚  
+- Implement **incremental ingestion** 
+- Add **unit tests for transformation logic** 
+- Integrate **data validation frameworks (e.g., Great Expectations)** 
+- Store metadata in a **data catalog** 
 
 ---
 
@@ -244,4 +244,4 @@ Possible enhancements for the pipeline include:
 **David Grisales**  
 Data Engineer Apprentice  
 
-Technologies: Python 🐍 | Apache Airflow 🌬 | PostgreSQL 🐘 | Pandas 🐼 | Docker 🐳
+Technologies: Python | Apache Airflow | PostgreSQL | Pandas | Docker
