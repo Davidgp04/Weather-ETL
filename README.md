@@ -75,7 +75,7 @@ To ensure data quality, the **production table includes several constraints**, s
 
 ---
 
-# 🌬 Airflow Orchestration
+# Airflow Orchestration
 
 The ETL pipeline is orchestrated using **Apache Airflow** through a Directed Acyclic Graph (DAG).
 
