@@ -42,7 +42,6 @@ def load_data(df ):
         VALUES (%s, %s, %s, %s, %s, %s)
         '''
 
-        # Bulk
         database_connection.execute_many(query, data_to_insert)
         logging.info("Data loaded successfully into staging table")
     except Exception as e:

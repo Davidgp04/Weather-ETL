@@ -10,7 +10,7 @@ for i in range(4):
     if i < 3:
         chunk = data.iloc[i*chunk_size:(i+1)*chunk_size]
     else:
-        chunk = data.iloc[i*chunk_size:]  # last chunk takes remainder
+        chunk = data.iloc[i*chunk_size:] 
 
     print(f"Processing chunk {i+1} with {len(chunk)} rows.")
     chunk.to_csv(f"data/weather_data_part_{i+1}.csv", index=False)
