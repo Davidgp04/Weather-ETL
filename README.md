@@ -160,6 +160,7 @@ This structure separates **pipeline logic, SQL scripts, orchestration code, and 
 ## ▶️ Running the Project
 
 ```
+cp .env.example .env
 echo "AIRFLOW_UID=$(id -u)" >> .env
 docker-compose up --build
 ```
