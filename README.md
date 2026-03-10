@@ -162,7 +162,7 @@ This structure separates **pipeline logic, SQL scripts, orchestration code, and 
 ```
 cp .env.example .env
 echo "AIRFLOW_UID=$(id -u)" >> .env
-docker-compose up --build
+docker compose up --build
 ```
 
 This command initializes the Docker environment and starts all required services, including **Airflow and PostgreSQL**.
